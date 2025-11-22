@@ -1,17 +1,16 @@
-"""
-Micro economy stock market simulation with simple agents and analysis.
-Requirements: Python 3, numpy, pandas, matplotlib.
-"""
+
+#Micro economy stock market simulation with simple agents and analysis.
+#Requirements: Python 3, numpy, pandas, matplotlib.
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Fixed seed for reproducibility
+# Fixed seed to reproduce results and prove hypothesis.
 np.random.seed(42)
 
 
-# ----- Configuration -----
+# config 
 N_ASSETS = 4
 ASSET_NAMES = ["STOCK_A", "STOCK_B", "STOCK_C", "STOCK_D"]
 INITIAL_PRICES = np.array([100.0, 80.0, 120.0, 60.0])
@@ -24,17 +23,17 @@ TIME_STEPS = 300
 MIN_PRICE = 1.0
 MOMENTUM_WINDOW = 4
 
-# Scheduled external shocks: (step, asset_index, percent_shift)
+# scheduledd external shocks
 SHOCKS = [
     (80, 0, 0.08),    # Positive budget news for STOCK_A at step 80
-    (170, 2, -0.1),   # Earnings miss for STOCK_C at step 170
-    (240, 1, 0.05),   # Sector boost for STOCK_B at step 240
+    (170, 2, -0.1),   # Earnings miss for stock c at  170
+    (240, 1, 0.05),   # Sector increase or boost ig for stock b at step 240
 ]
 
 
-# ----- Agent creation -----
+#creating agent
 def create_agents():
-    """Create a list of agent dictionaries with type, cash, holdings, and risk."""
+    # its basically creating a list of agent dictionaries with type, cash, holdinggs, and also risk
     agents = []
 
     type_counts = {
@@ -57,9 +56,9 @@ def create_agents():
     return agents
 
 
-# ----- Strategy helpers -----
+#Strategy helpers
 def value_investor_strategy(prices, fundamentals, agent):
-    """Buy undervalued assets, sell overvalued ones."""
+    #this one basically buy undervalued assets, sell overvalued ones
     threshold = 0.05
     orders = np.zeros(N_ASSETS, dtype=int)
     mispricing = (fundamentals - prices) / fundamentals
@@ -73,7 +72,7 @@ def value_investor_strategy(prices, fundamentals, agent):
 
 
 def momentum_trader_strategy(price_history, agent):
-    """Follow recent trends using last MOMENTUM_WINDOW returns."""
+    # this one follows recent trends using last MOMENTUM_WINDOW returns 
     orders = np.zeros(N_ASSETS, dtype=int)
     if price_history.shape[0] <= MOMENTUM_WINDOW:
         return orders
@@ -90,7 +89,7 @@ def momentum_trader_strategy(price_history, agent):
 
 
 def noise_trader_strategy(agent):
-    """Random small buy/sell/hold decisions."""
+    # this one is kind of random to stimulate noise, like small buy/sell/hold 
     orders = np.zeros(N_ASSETS, dtype=int)
     choices = [-1, 0, 1]
     probs = [0.25, 0.5, 0.25]
@@ -101,7 +100,7 @@ def noise_trader_strategy(agent):
 
 
 def contrarian_strategy(price_history, agent):
-    """Buy dips gently, sell sharply after big drops (panic)."""
+    #Buy dips gently, sell sharply after big drops. its basically panicking
     orders = np.zeros(N_ASSETS, dtype=int)
     if price_history.shape[0] < 2:
         return orders
@@ -115,9 +114,8 @@ def contrarian_strategy(price_history, agent):
     return orders
 
 
-# ----- Simulation -----
+# Simulation
 def generate_orders(agents, price_history):
-    """Generate desired orders for all agents."""
     prices = price_history[-1]
     all_orders = []
 
@@ -136,7 +134,7 @@ def generate_orders(agents, price_history):
 
 
 def apply_shocks(step, prices, shock_log):
-    """Apply scheduled price shocks."""
+    # this will Apply scheduled price shocks.
     price_shift = np.zeros_like(prices)
     for shock in SHOCKS:
         shock_step, asset_idx, pct = shock
@@ -149,7 +147,7 @@ def apply_shocks(step, prices, shock_log):
 
 
 def update_prices(prices, net_demand, shocks):
-    """Update prices using linear impact, noise, and shocks."""
+    # this will Update prices using  impact, noise, and shocks basically all that happens
     new_prices = prices.copy()
     for i in range(N_ASSETS):
         noise = np.random.normal(0, BASE_VOLATILITY[i])
@@ -161,7 +159,7 @@ def update_prices(prices, net_demand, shocks):
 
 
 def execute_trades(agents, prices, desired_orders, transaction_log, step):
-    """Execute trades at current prices with cash/holding constraints."""
+    # this will Execute trades at current prices with cash/holding constraints that are defined
     for idx, agent in enumerate(agents):
         for asset_idx in range(N_ASSETS):
             order = desired_orders[idx, asset_idx]
@@ -204,7 +202,7 @@ def execute_trades(agents, prices, desired_orders, transaction_log, step):
 
 
 def run_simulation():
-    """Main simulation loop."""
+    # this is the main Main simulation loop
     agents = create_agents()
     price_history = [INITIAL_PRICES]
     net_demand_history = []
@@ -232,7 +230,7 @@ def run_simulation():
     )
 
 
-# ----- Analysis -----
+# Analysis of the simulation
 def compute_agent_wealth(agents, final_prices):
     wealth = []
     for agent in agents:
@@ -314,7 +312,7 @@ def plot_correlation_heatmap(price_history):
     plt.show()
 
 
-# ----- Main -----
+# Main (runs everything)
 def main():
     price_history, net_demand_history, agents, trades_df, shocks_df = run_simulation()
     final_prices = price_history[-1]
