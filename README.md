@@ -1,5 +1,7 @@
 A micro economy model
 
+EDIT 13/8/25: PLEASE USE VS CODE OR A SIMILAR CODE EDITOR WHILE RUNNING THE FINAL FILE FOR IT TO WORK. OTHERWISE IT MAY NOT WORK. THE STOCK PYTHON EDITOR DOES NOT WORK AS OF NOW, I AM WORKING ON MAKING IT WORK. THANK YOU
+
 
 this project contains a simple fakestock market inspired by the Indian stock market. It models a small set of assets and several different agent types that trade over time using rule based strategies. The goal is to study basic price formation, volatility and agent profit/loss patterns inside a controlled micro economy. I've seen a lot of these kinds of projects for US and international markets, so I thought i would try my hand at making one for Indian markets.
 
